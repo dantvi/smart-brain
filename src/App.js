@@ -1,9 +1,12 @@
-
+import Navigation from "./components/navigation/navigation.component";
 
 function App() {
   return (
     <div className="App">
-      <h1>Helloooo</h1>
+      <Navigation />
+      {/* <Logo />
+      <ImageLinkForm />
+      <FaceRecognition /> */}
     </div>
   );
 }
