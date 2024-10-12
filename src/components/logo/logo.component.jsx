@@ -6,7 +6,7 @@ const Logo = () => {
   return (
     <div className="logo-container ma4 mt0">
       <Tilt>
-        <div className='logo br2 shadow-2'>
+        <div className='logo center br2 shadow-2'>
           <img src={brain} alt="Icon of a brain symbolizing thinking" />
         </div>
       </Tilt>
