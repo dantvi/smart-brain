@@ -2,6 +2,7 @@ import { Component } from 'react';
 import ParticlesBg from 'particles-bg';
 import Navigation from "./components/navigation/navigation.component";
 import SignIn from './components/sign-in/sign-in.component';
+import Register from './components/register/register.component';
 import Logo from "./components/logo/logo.component";
 import Rank from "./components/rank/rank.component";
 import ImageLinkForm from "./components/image-link-form/image-link-form.component";
@@ -124,7 +125,7 @@ class App extends Component {
 
 
   onRouteChange = (route) => {
-    this.setState({route: route});
+    this.setState({ route: route });
   }
 
   render() {
@@ -132,15 +133,19 @@ class App extends Component {
       <div className="App">
         <ParticlesBg num={5} type="circle" bg={true} />
         <Navigation onRouteChange={this.onRouteChange} />
-        {this.state.route === 'sign-in' ?
-          <SignIn onRouteChange={this.onRouteChange} />
-          :
+        {this.state.route === 'home' ?
           <div>
             <Logo />
             <Rank />
             <ImageLinkForm onInputChange={this.onInputChange} onButtonSubmit={this.onButtonSubmit} />
             <FaceRecognition imageUrl={this.state.imageUrl} />
           </div>
+          : (
+            this.state.route === 'sign-in' ?
+              <SignIn onRouteChange={this.onRouteChange} />
+              :
+              <Register onRouteChange={this.onRouteChange} />
+          )
         }
       </div>
     );
