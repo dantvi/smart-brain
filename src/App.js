@@ -10,66 +10,25 @@ import FaceRecognition from './components/face-recognition/face-recognition.comp
 import './App.css';
 
 
-///////////////////////////////////////////////////////////////////////////////////////////////////
-// Clarifai Request Options
-///////////////////////////////////////////////////////////////////////////////////////////////////
-
-const MODEL_ID = 'face-detection';
-
-const returnClarifaiRequestOptions = (imageUrl) => {
-  // Change PAT (Personal Access Token), USER_ID and APP_ID
-  const PAT = 'PAT';
-  const USER_ID = 'USER_ID';
-  const APP_ID = 'APP_ID';
-
-  const IMAGE_URL = imageUrl;
-
-  const raw = JSON.stringify({
-    "user_app_id": {
-      "user_id": USER_ID,
-      "app_id": APP_ID
-    },
-    "inputs": [
-      {
-        "data": {
-          "image": {
-            "url": IMAGE_URL
-          }
-        }
-      }
-    ]
-  });
-
-  const requestOptions = {
-    method: 'POST',
-    headers: {
-      'Accept': 'application/json',
-      'Authorization': 'Key ' + PAT
-    },
-    body: raw
-  };
-
-  return requestOptions;
+const initialState = {
+  input: '',
+  imageUrl: '',
+  box: {},
+  route: 'sign-in',
+  isSignedIn: false,
+  user: {
+    id: '',
+    name: '',
+    email: '',
+    entries: 0,
+    joined: ''
+  }
 }
-
 
 class App extends Component {
   constructor() {
     super();
-    this.state = {
-      input: '',
-      imageUrl: '',
-      box: {},
-      route: 'sign-in',
-      isSignedIn: false,
-      user: {
-        id: '',
-        name: '',
-        email: '',
-        entries: 0,
-        joined: ''
-      }
-    }
+    this.state = initialState;
   }
 
   loadUser = (data) => {
@@ -84,10 +43,9 @@ class App extends Component {
     });
   }
 
-  // Currently not in use! Fix later! 
   calculateFaceLocation = (data) => {
     const clarifaiFace = data.outputs[0].data.regions[0].region_info.bounding_box;
-    const image = document.getElementById('input-image');
+    const image = document.getElementById('inputimage');
     const width = Number(image.width);
     const height = Number(image.height);
     return {
@@ -108,12 +66,14 @@ class App extends Component {
 
   onButtonSubmit = () => {
     this.setState({ imageUrl: this.state.input });
-
-    ///////////////////////////////////////////////////////////////////////////////////////////////////
-    // Clarifai API
-    ///////////////////////////////////////////////////////////////////////////////////////////////////
-
-    fetch("https://api.clarifai.com/v2/models/" + MODEL_ID + "/outputs", returnClarifaiRequestOptions(this.state.input))
+    fetch('http://localhost:3000/imageurl', {
+      method: 'post',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        input: this.state.input
+      })
+    })
+      .then(response => response.json())
       .then(response => {
         if (response) {
           fetch('http://localhost:3000/image', {
@@ -125,42 +85,18 @@ class App extends Component {
           })
             .then(response => response.json())
             .then(count => {
-              this.setState(Object.assign(this.state.user, { entries: count }));
+              this.setState(Object.assign(this.state.user, { entries: count }))
             })
+            .catch(console.log)
         }
+        this.displayFaceBox(this.calculateFaceLocation(response))
       })
-      .then(result => {
-
-        console.log(result);
-
-        const regions = result.outputs[0].data.regions;
-
-        regions.forEach(region => {
-          // Accessing and rounding the bounding box values
-          const boundingBox = region.region_info.bounding_box;
-          const topRow = boundingBox.top_row.toFixed(3);
-          const leftCol = boundingBox.left_col.toFixed(3);
-          const bottomRow = boundingBox.bottom_row.toFixed(3);
-          const rightCol = boundingBox.right_col.toFixed(3);
-
-          region.data.concepts.forEach(concept => {
-            // Accessing and rounding the concept value
-            const name = concept.name;
-            const value = concept.value.toFixed(4);
-
-            console.log(`${name}: ${value} BBox: ${topRow}, ${leftCol}, ${bottomRow}, ${rightCol}`);
-
-          });
-        });
-
-      })
-      .catch(error => console.log('error', error));
+      .catch(err => console.log(err));
   }
-
 
   onRouteChange = (route) => {
     if (route === 'sign-out') {
-      this.setState({ isSignedIn: false });
+      this.setState(initialState);
     } else if (route === 'home') {
       this.setState({ isSignedIn: true });
     }
@@ -168,7 +104,7 @@ class App extends Component {
   }
 
   render() {
-    const { isSignedIn, imageUrl, route } = this.state;
+    const { isSignedIn, imageUrl, route, box } = this.state;
     return (
       <div className="App">
         <ParticlesBg num={5} type="circle" bg={true} />
@@ -178,7 +114,7 @@ class App extends Component {
             <Logo />
             <Rank name={this.state.user.name} entries={this.state.user.entries} />
             <ImageLinkForm onInputChange={this.onInputChange} onButtonSubmit={this.onButtonSubmit} />
-            <FaceRecognition imageUrl={imageUrl} />
+            <FaceRecognition box={box} imageUrl={imageUrl} />
           </div>
           : (
             route === 'sign-in' || route === 'sign-out' ?
