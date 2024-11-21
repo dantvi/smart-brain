@@ -1,6 +1,6 @@
 # Smart Brain Frontend - Face Detection App
 
-Smart Brain is a web-based face detection application that uses AI to identify faces in user-uploaded images. This project is part of the Complete Web Developer Course by Zero To Mastery and demonstrates full-stack development skills, including React for the front-end and Node.js with PostgreSQL for the back-end.
+Smart Brain is a web-based face detection application that uses AI to identify faces in user-uploaded images. This project is part of the Complete Web Developer Course by Zero To Mastery and demonstrates full-stack development skills, including React for the front-end and Node.js with PostgreSQL for the back-end. For detailed information about the backend implementation, please refer to the [backend repository](https://github.com/dantvi/smart-brain-api). 
 
 ## Table of contents
 
@@ -49,8 +49,8 @@ The Smart Brain App allows users to:
 - PostgreSQL: For user and activity data storage.
 - Clarifai API: For face detection functionality.
 #### Other Tools
-- Heroku: Deployment platform for both the front-end and back-end.
 - RESTful APIs: For communication between the client and server.
+- One.com is used for hosting the front-end, while Heroku is used for the back-end deployment.
 
 ### How It Works
 
@@ -62,7 +62,8 @@ The Smart Brain App allows users to:
   - The app sends the URL to the back-end, which then uses the Clarifai API to analyze the image.
   - Detected faces are highlighted on the image.
 - Leaderboard:
-  - The app tracks the number of detections for each user and displays their progress on the dashboard.
+  - The app tracks the number of detections for each user and displays their progress on the dashboard. 
+  - The leaderboard dynamically displays user activity, relying on backend data. 
 
 ### What I learned
 
