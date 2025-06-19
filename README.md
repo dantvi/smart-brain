@@ -1,6 +1,6 @@
 # Smart Brain Frontend - Face Detection App
 
-Smart Brain is a web-based face detection application that uses AI to identify faces in user-uploaded images. This project is part of the Complete Web Developer Course by Zero To Mastery and demonstrates full-stack development skills, including React for the front-end and Node.js with PostgreSQL for the back-end. For detailed information about the backend implementation, please refer to the [backend repository](https://github.com/dantvi/smart-brain-api). 
+Smart Brain is a web-based face detection application that uses AI to identify faces in user-submitted images. This project is part of the Complete Web Developer Course by Zero To Mastery and demonstrates full-stack development skills, including React for the frontend and Node.js with a MySQL database (running in Docker) for the backend. For backend details, see the [backend repository](https://github.com/dantvi/smart-brain-api). 
 
 ## Table of contents
 
@@ -23,10 +23,11 @@ Smart Brain is a web-based face detection application that uses AI to identify f
 
 ## Overview
 
-The Smart Brain App allows users to:
-- Face Detection: Upload an image, and the application will detect faces using an AI model.
-- User Authentication: Register or sign in to track your face detection activity.
-- Interactive Design: Intuitive UI with animations and responsive elements.
+Smart Brain Frontend lets you:
+- Detect Faces: Enter an image URL and the app highlights faces detected by an AI model.
+- JWT-based Authentication: Secure registration and login flows with JSON Web Tokens.
+- Track Submissions: See how many images you have processed.
+- Interactive Design: Clean UI with animations and responsive elements.
 
 ### Screenshot
 
@@ -41,76 +42,74 @@ The Smart Brain App allows users to:
 ### Built with
 
 #### Frontend
-- React: For building the user interface.
-- Tachyons: For styling the application.
-- Particles-bg: For adding dynamic background particles.
+- React — UI framework
+- Tachyons — Utility-first CSS framework
+- Particles-bg — Animated background
+- JWT in localStorage — For secure requests
 #### Backend
-- Node.js & Express: For handling server-side logic and routing.
-- PostgreSQL: For user and activity data storage.
-- Clarifai API: For face detection functionality.
+- Node.js & Express — API server
+- MySQL — User and activity data, run in Docker
+- Clarifai API — AI face detection
 #### Other Tools
-- RESTful APIs: For communication between the client and server.
-- One.com is used for hosting the front-end, while Heroku is used for the back-end deployment.
+- RESTful API — Client-server communication
+- Docker Compose — Local database containerization
 
 ### How It Works
 
-- User Authentication:
-  - Users can register with their name, email, and password.
-  - Returning users can log in with their credentials.
+- Authentication with JWT:
+  - Users register or sign in with email and password.
+  - A JWT is received on sign-in and stored in localStorage.
+  - Protected requests like /image require a valid token.
 - Face Detection:
-  - Users enter the URL of an image.
-  - The app sends the URL to the back-end, which then uses the Clarifai API to analyze the image.
-  - Detected faces are highlighted on the image.
-- Leaderboard:
-  - The app tracks the number of detections for each user and displays their progress on the dashboard. 
-  - The leaderboard dynamically displays user activity, relying on backend data. 
+  - Users input an image URL.
+  - The frontend sends this to the backend, which calls Clarifai’s API.
+  - The detected face box is displayed over the image.
+- Submission Tracking:
+  - Each detection increments the user's count.
+  - Users can track their total processed images.
 
 ### What I learned
 
-This project allowed me to:
-- Build a complete full-stack application using React, Node.js, and PostgreSQL.
-- Work with third-party APIs (Clarifai) to integrate AI functionality.
-- Enhance user authentication with server-side validation.
-- Use React components and props to create a modular, reusable codebase.
+Key lessons from this project:
+- Implementing JWT-based authentication with localStorage in React.
+- Protecting routes and API calls with tokens.
+- Integrating a third-party AI API (Clarifai) with a custom backend.
+- Running a local database with Docker for easy setup and portability.
+- Creating a clean, reusable React component structure.
 
-Here’s an example of the component handling face detection and image display:
+Example: FaceRecognition component
 
 ```jsx
 import './face-recognition.styles.css';
 
-const FaceRecognition = ({ imageUrl, box }) => {
-  return (
-    <div className="center ma">
-      <div className="absolute mt2">
-        <img id="inputimage" alt="" src={imageUrl} width="500px" height="auto" />
-        <div
-          className="bounding-box"
-          style={{
-            top: box.topRow,
-            right: box.rightCol,
-            bottom: box.bottomRow,
-            left: box.leftCol,
-          }}
-        ></div>
-      </div>
+const FaceRecognition = ({ imageUrl, box }) => (
+  <div className="center ma">
+    <div className="absolute mt2">
+      <img id="inputimage" alt="" src={imageUrl} width="500px" height="auto" />
+      <div
+        className="bounding-box"
+        style={{
+          top: box.topRow,
+          right: box.rightCol,
+          bottom: box.bottomRow,
+          left: box.leftCol,
+        }}
+      ></div>
     </div>
-  );
-};
+  </div>
+);
 
 export default FaceRecognition;
 ```
 
-This component:
-- Displays the submitted image.
-- Highlights the detected face using the bounding box coordinates passed as props.
-
 ### Continued development
 
-In future iterations, I plan to:
-- Add image upload functionality directly from the user's device.
-- Improve the UI/UX with additional animations and themes.
-- Implement multi-face detection and detailed analysis.
-- Optimize for mobile performance. 
+Next improvements:
+- Allow direct image uploads (not just URLs).
+- Refine UI/UX with modern styling.
+- Extend Clarifai usage to detect multiple faces per image.
+- Auto-logout on token expiry.
+- Migrate to Context API for cleaner auth state handling.
 
 ### Setup Instructions
 
@@ -123,20 +122,25 @@ cd smart-brain
 ```bash
 npm install
 ```
-3. Start the development server: 
+3. Create a .env to run on a custom port:
 ```bash
-npm start
+PORT=3001
+```
+4. Start the development server: 
+```bash
+npm run dev
 ```
 
-Note: Ensure the backend is set up and running for the face detection functionality to work.
+Note: Make sure your backend API is running on http://localhost:3000 with the MySQL database started via Docker Compose.
 
 ### Useful resources
 
-- [React Docs: Quick Start](https://react.dev/learn) - An excellent guide to learn and master React's core concepts.
-- [Clarifai API Documentation](https://docs.clarifai.com/) - Essential documentation for integrating the face detection API.
-- [NPM Particles-bg](https://www.npmjs.com/package/particles-bg) - A useful library for creating engaging background animations.
-- [NPM React Parallax Tilt](https://www.npmjs.com/package/react-parallax-tilt) - Used to create smooth 3D parallax effects for UI components like the logo.
-- [Tachyons Documentation](https://tachyons.io/docs/) - Detailed reference for Tachyons CSS framework used to style the app.
+- [React Docs](https://react.dev/learn)
+- [Clarifai API Docs](https://docs.clarifai.com/)
+- [Particles-bg on NPM](https://www.npmjs.com/package/particles-bg)
+- [React Parallax Tilt](https://www.npmjs.com/package/react-parallax-tilt)
+- [Tachyons Docs](https://tachyons.io/docs/)
+- [Docker Docs](https://docs.docker.com/)
 
 ## Author
 
@@ -145,4 +149,4 @@ Note: Ensure the backend is set up and running for the face detection functional
 
 ## Acknowledgments
 
-Special thanks to Zero To Mastery for offering a well-structured course that provided a strong foundation in web development. A big shoutout to the instructor and founder, Andrei Neagoie, whose expertise and ability to explain complex concepts in simple terms made learning an enjoyable and enriching experience. Furthermore, platforms like MDN Web Docs and Stack Overflow were invaluable resources during the development process.
+Special thanks to Zero To Mastery and Andrei Neagoie for building a great foundation in full-stack web development. Also, huge appreciation to MDN Web Docs and Stack Overflow for daily problem-solving!
