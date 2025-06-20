@@ -24,7 +24,7 @@ Smart Brain is a web-based face detection application that uses AI to identify f
 ## Overview
 
 Smart Brain Frontend lets you:
-- Detect Faces: Enter an image URL and the app highlights faces detected by an AI model.
+- Detect Multiple Faces: Enter an image URL and the app highlights all faces detected by an AI model.
 - JWT-based Authentication: Secure registration and login flows with JSON Web Tokens.
 - Track Submissions: See how many images you have processed.
 - Interactive Design: Clean UI with animations and responsive elements.
@@ -63,7 +63,7 @@ Smart Brain Frontend lets you:
 - Face Detection:
   - Users input an image URL.
   - The frontend sends this to the backend, which calls Clarifai’s API.
-  - The detected face box is displayed over the image.
+  - All detected face boxes are displayed over the image, supporting multiple faces in the same photo.
 - Submission Tracking:
   - Each detection increments the user's count.
   - Users can track their total processed images.
@@ -107,7 +107,6 @@ export default FaceRecognition;
 Next improvements:
 - Allow direct image uploads (not just URLs).
 - Refine UI/UX with modern styling.
-- Extend Clarifai usage to detect multiple faces per image.
 - Auto-logout on token expiry.
 - Migrate to Context API for cleaner auth state handling.
 
